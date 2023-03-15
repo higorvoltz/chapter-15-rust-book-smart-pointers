@@ -22,6 +22,16 @@ impl<T> Deref for MyBox<T> {
   }
 }
 
+struct CustomSmartPointer {
+  data: String,
+}
+
+impl Drop for CustomSmartPointer {
+  fn drop(&mut self) {
+    println!("dropping CustomerSmartPointer with data `{}`!", self.data);
+  }
+}
+
 fn main() {
   // Using Box<T> to Point to Data on the Heap
   let b = Box::new(5);
@@ -61,5 +71,26 @@ fn main() {
   hello(&rust);
 
   hello(&(*rust)[..]);
+
+  // Running Code on Cleanup with the Drop Trait
+  let c = CustomSmartPointer {
+    data: String::from("my stuff"),
+  };
+  let d = CustomSmartPointer {
+    data: String::from("other stuff"),
+  };
+  println!("custom smart pointers created!"); // output dropping CustomerSmartPointer with data `other stuff`!
+                                              //        dropping CustomerSmartPointer with data `my stuff`!
+
+  let e = CustomSmartPointer {
+    data: String::from("my stuff"),
+  };
+  drop(e);
+  let f = CustomSmartPointer {
+    data: String::from("other stuff"),
+  };
+  println!("custom smart pointers created!"); // output dropping CustomerSmartPointer with data `my stuff`!
+
+
 
 }
